@@ -1,2 +1,2 @@
-import common.external_packages
+import trex.common.external_packages
 
