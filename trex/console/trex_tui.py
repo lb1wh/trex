@@ -1,3 +1,4 @@
+from __future__ import print_function
 import termios
 import sys
 import os
@@ -19,9 +20,9 @@ class SimpleBar(object):
 
     def show (self):
         if self.desc:
-            print format_text("{0} {1}".format(self.desc, self.pattern[self.index]), 'bold')
+            print(format_text("{0} {1}".format(self.desc, self.pattern[self.index]), 'bold'))
         else:
-            print format_text("{0}".format(self.pattern[self.index]), 'bold')
+            print(format_text("{0}".format(self.pattern[self.index]), 'bold'))
 
         self.index = (self.index + 1) % self.pattern_len
 
@@ -229,10 +230,10 @@ class TrexTUILog():
         if cut < 0:
             cut = 0
 
-        print format_text("\nLog:", 'bold', 'underline')
+        print(format_text("\nLog:", 'bold', 'underline'))
 
         for msg in self.log[cut:]:
-            print msg
+            print(msg)
 
 
 # Panels manager (contains server panels)
@@ -292,7 +293,7 @@ class TrexTUIPanelManager():
             self.dis_bar.show()
 
     def print_legend (self):
-        print format_text(self.legend, 'bold')
+        print(format_text(self.legend, 'bold'))
 
 
     # on window switch or turn on / off of the TUI we call this
@@ -435,7 +436,7 @@ class TrexTUI():
             # restore
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
-        print ""
+        print("")
 
 
     # draw once
@@ -450,7 +451,7 @@ class TrexTUI():
             sys.stdout = old_stdout
 
             self.clear_screen()
-            print mystdout.getvalue()
+            print(mystdout.getvalue())
             sys.stdout.flush()
 
             self.draw_policer = 0

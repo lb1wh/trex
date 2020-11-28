@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from collections import namedtuple, OrderedDict
 from common.trex_types import *
@@ -395,21 +396,21 @@ class Port(object):
         rate = self.get_profile()['rate']
         graph = self.get_profile()['graph']
 
-        print format_text("Profile Map Per Port\n", 'underline', 'bold')
+        print(format_text("Profile Map Per Port\n", 'underline', 'bold'))
 
         factor = mult_to_factor(mult, rate['max_bps_l2'], rate['max_pps'], rate['max_line_util'])
 
-        print "Profile max BPS L2    (base / req):   {:^12} / {:^12}".format(format_num(rate['max_bps_l2'], suffix = "bps"),
-                                                                             format_num(rate['max_bps_l2'] * factor, suffix = "bps"))
+        print("Profile max BPS L2    (base / req):   {:^12} / {:^12}".format(format_num(rate['max_bps_l2'], suffix = "bps"),
+                                                                             format_num(rate['max_bps_l2'] * factor, suffix = "bps")))
 
-        print "Profile max BPS L1    (base / req):   {:^12} / {:^12}".format(format_num(rate['max_bps_l1'], suffix = "bps"),
-                                                                             format_num(rate['max_bps_l1'] * factor, suffix = "bps"))
+        print("Profile max BPS L1    (base / req):   {:^12} / {:^12}".format(format_num(rate['max_bps_l1'], suffix = "bps"),
+                                                                             format_num(rate['max_bps_l1'] * factor, suffix = "bps")))
 
-        print "Profile max PPS       (base / req):   {:^12} / {:^12}".format(format_num(rate['max_pps'], suffix = "pps"),
-                                                                             format_num(rate['max_pps'] * factor, suffix = "pps"),)
+        print("Profile max PPS       (base / req):   {:^12} / {:^12}".format(format_num(rate['max_pps'], suffix = "pps"),
+                                                                             format_num(rate['max_pps'] * factor, suffix = "pps"),))
 
-        print "Profile line util.    (base / req):   {:^12} / {:^12}".format(format_percentage(rate['max_line_util']),
-                                                                             format_percentage(rate['max_line_util'] * factor))
+        print("Profile line util.    (base / req):   {:^12} / {:^12}".format(format_percentage(rate['max_line_util']),
+                                                                             format_percentage(rate['max_line_util'] * factor)))
 
 
         # duration
@@ -424,9 +425,9 @@ class Port(object):
                 exp_time_factor_sec = duration
 
 
-        print "Duration              (base / req):   {:^12} / {:^12}".format(format_time(exp_time_base_sec),
-                                                                             format_time(exp_time_factor_sec))
-        print "\n"
+        print("Duration              (base / req):   {:^12} / {:^12}".format(format_time(exp_time_base_sec),
+                                                                             format_time(exp_time_factor_sec)))
+        print("\n")
 
 
     def get_port_state_name(self):

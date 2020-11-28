@@ -1,6 +1,9 @@
 #!/router/bin/python
 
-import external_packages
+from __future__ import absolute_import
+#!/router/bin/python
+
+from . import external_packages
 import dpkt
 import socket
 import binascii
@@ -14,7 +17,7 @@ from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 import base64
 
-from packet_builder_interface import CTrexPktBuilderInterface
+from .packet_builder_interface import CTrexPktBuilderInterface
 
 class CTRexPktBuilder(CTrexPktBuilderInterface):
     """

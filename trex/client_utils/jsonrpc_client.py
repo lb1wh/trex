@@ -1,9 +1,12 @@
 #!/router/bin/python
 
-import external_packages
+from __future__ import absolute_import
+#!/router/bin/python
+
+from . import external_packages
 import zmq
 import json
-import general_utils
+from . import general_utils
 import re
 from time import sleep
 from collections import namedtuple
@@ -95,7 +98,7 @@ class JsonRpcClient(object):
 
         msg["params"] = params
 
-        msg["id"] = self.id_gen.next()
+        msg["id"] = next(self.id_gen)
 
         if encode:
             return id, json.dumps(msg)

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 
+from __future__ import print_function
 import os
 import stat
 import sys
@@ -70,7 +71,7 @@ class CTRexServer(object):
         self.zmq_monitor        = ZmqMonitorSession(self.trex, self.trex_zmq_port)    # intiate single ZMQ monitor thread for server usage
     
     def add(self, x, y):
-        print "server function add ",x,y
+        print("server function add ",x,y)
         logger.info("Processing add function. Parameters are: {0}, {1} ".format( x, y ))
         return x + y
         # return Fault(-10, "")
@@ -95,7 +96,7 @@ class CTRexServer(object):
         """This method fires up the daemon server based on initialized parameters of the class"""
         # initialize the server instance with given resources
         try:
-            print "Firing up TRex REST daemon @ port {trex_port} ...\n".format( trex_port = self.trex_daemon_port )
+            print("Firing up TRex REST daemon @ port {trex_port} ...\n".format( trex_port = self.trex_daemon_port ))
             logger.info("Firing up TRex REST daemon @ port {trex_port} ...".format( trex_port = self.trex_daemon_port ))
             logger.info("current working dir is: {0}".format(self.TREX_PATH) )
             logger.info("current files dir is  : {0}".format(self.trex_files_path) )
@@ -105,7 +106,7 @@ class CTRexServer(object):
         except socket.error as e:
             if e.errno == errno.EADDRINUSE:
                 logger.error("TRex server requested address already in use. Aborting server launching.")
-                print "TRex server requested address already in use. Aborting server launching."
+                print("TRex server requested address already in use. Aborting server launching.")
                 raise socket.error(errno.EADDRINUSE, "TRex daemon requested address already in use. "
                                                      "Server launch aborted. Please make sure no other process is "
                                                      "using the desired server properties.")
@@ -381,13 +382,13 @@ class CTRexServer(object):
     def __check_trex_path_validity(self):
         # check for executable existance
         if not os.path.exists(self.TREX_PATH+'/t-rex-64'):
-            print "The provided TRex path do not contain an executable TRex file.\nPlease check the path and retry."
+            print("The provided TRex path do not contain an executable TRex file.\nPlease check the path and retry.")
             logger.error("The provided TRex path do not contain an executable TRex file")
             exit(-1)
         # check for executable permissions
         st = os.stat(self.TREX_PATH+'/t-rex-64')
         if not bool(st.st_mode & (stat.S_IXUSR ) ):
-            print "The provided TRex path do not contain an TRex file with execution privileges.\nPlease check the files permissions and retry."
+            print("The provided TRex path do not contain an TRex file with execution privileges.\nPlease check the files permissions and retry.")
             logger.error("The provided TRex path do not contain an TRex file with execution privileges")
             exit(-1)
         else:
@@ -397,16 +398,16 @@ class CTRexServer(object):
         # first, check for path existance. otherwise, try creating it with appropriate credentials
         if not os.path.exists(self.trex_files_path):
             try:
-                os.makedirs(self.trex_files_path, 0660)
+                os.makedirs(self.trex_files_path, 0o660)
                 return
             except os.error as inst:
-                print "The provided files path does not exist and cannot be created with needed access credentials using root user.\nPlease check the path's permissions and retry."
+                print("The provided files path does not exist and cannot be created with needed access credentials using root user.\nPlease check the path's permissions and retry.")
                 logger.error("The provided files path does not exist and cannot be created with needed access credentials using root user.")
                 exit(-1)
         elif os.access(self.trex_files_path, os.W_OK):
             return
         else:
-            print "The provided files path has insufficient access credentials for root user.\nPlease check the path's permissions and retry."
+            print("The provided files path has insufficient access credentials for root user.\nPlease check the path's permissions and retry.")
             logger.error("The provided files path has insufficient access credentials for root user")
             exit(-1)
 

@@ -1,6 +1,8 @@
 #!/router/bin/python
 
-import trex_client
+from __future__ import print_function
+from __future__ import absolute_import
+from . import trex_client
 from jsonrpclib import ProtocolError, AppError
 
 class CTRexAdvClient(trex_client.CTRexClient):
@@ -55,16 +57,14 @@ class CTRexAdvClient(trex_client.CTRexClient):
 
 if __name__ == "__main__":
     trex = CTRexAdvClient('trex-dan', trex_daemon_port = 8383, verbose = True)
-    print trex.start_quick_trex(delay = 10, 
-        dual = True, 
+    print(trex.start_quick_trex(delay = 10,
+        dual = True,
         d = 20,
-        interfaces = ["gig0/0/1", "gig0/0/2"], 
-        ipv6 = False, 
-        pcap_file="avl/http_browsing.pcap", 
-        times=3)
-    print trex.stop_quick_trex()
-    print trex.get_running_stats()
-    print trex.clear_counters()
+        interfaces = ["gig0/0/1", "gig0/0/2"],
+        ipv6 = False,
+        pcap_file="avl/http_browsing.pcap",
+        times=3))
+    print(trex.stop_quick_trex())
+    print(trex.get_running_stats())
+    print(trex.clear_counters())
     pass
-
-

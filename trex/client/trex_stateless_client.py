@@ -1,8 +1,10 @@
 #!/router/bin/python
 
+from __future__ import print_function
+from __future__ import absolute_import
 try:
     # support import for Python 2
-    import outer_packages
+    from . import outer_packages
 except ImportError:
     # support import for Python 3
     import client.outer_packages
@@ -21,10 +23,10 @@ import time
 import datetime
 import re
 import random
-from trex_port import Port
+from .trex_port import Port
 from common.trex_types import *
 from common.trex_stl_exceptions import *
-from trex_async_client import CTRexAsyncClient
+from .trex_async_client import CTRexAsyncClient
 from yaml import YAMLError
 
 
@@ -118,9 +120,9 @@ class DefaultLogger(LoggerApi):
 
     def write (self, msg, newline = True):
         if newline:
-            print msg
+            print(msg)
         else:
-            print msg,
+            print(msg, end=' ')
 
     def flush (self):
         sys.stdout.flush()
@@ -172,7 +174,7 @@ class AsyncEventHandler(object):
             if m:
                 port_id = int(m.group(2))
                 field_name = m.group(1)
-                if self.client.ports.has_key(port_id):
+                if port_id in self.client.ports:
                     if not port_id in port_stats:
                         port_stats[port_id] = {}
                     port_stats[port_id][field_name] = value
@@ -350,7 +352,7 @@ class CCommLink(object):
         if self.virtual:
             self._prompt_virtual_tx_msg()
             _, msg = self.rpc_link.create_jsonrpc_v2(method_name, params)
-            print msg
+            print(msg)
             return
         else:
             return self.rpc_link.invoke_rpc_method(method_name, params)
@@ -358,9 +360,9 @@ class CCommLink(object):
     def transmit_batch(self, batch_list):
         if self.virtual:
             self._prompt_virtual_tx_msg()
-            print [msg
+            print([msg
                    for _, msg in [self.rpc_link.create_jsonrpc_v2(command.method, command.params)
-                                  for command in batch_list]]
+                                  for command in batch_list]])
         else:
             batch = self.rpc_link.create_batch()
             for command in batch_list:
@@ -369,8 +371,8 @@ class CCommLink(object):
             return batch.invoke()
 
     def _prompt_virtual_tx_msg(self):
-        print "Transmitting virtually over tcp://{server}:{port}".format(server=self.server,
-                                                                         port=self.port)
+        print("Transmitting virtually over tcp://{server}:{port}".format(server=self.server,
+                                                                         port=self.port))
 
 
 
@@ -1322,7 +1324,7 @@ class STLClient(object):
                 streams = module.register().get_streams()
 
             except Exception as e :
-                print str(e);
+                print(str(e));
                 traceback.print_exc(file=sys.stdout)
                 raise STLError("Unexpected error: '{0}'".format(filename))
 

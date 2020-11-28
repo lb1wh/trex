@@ -1,4 +1,6 @@
-import external_packages
+from __future__ import print_function
+from __future__ import absolute_import
+from . import external_packages
 import random
 import string
 import struct
@@ -8,7 +10,7 @@ import yaml
 import binascii
 import base64
 
-from packet_builder_interface import CTrexPktBuilderInterface
+from .packet_builder_interface import CTrexPktBuilderInterface
 
 from scapy.all import *
 
@@ -266,15 +268,15 @@ class CTRexVmEngine(object):
        def dump (self):
            cnt=0;
            for obj in self.ins:
-               print "ins",cnt
+               print("ins",cnt)
                cnt = cnt +1
-               print obj.__dict__
+               print(obj.__dict__)
 
        def dump_bjson (self):
-          print json.dumps(self.get_json(), sort_keys=True, indent=4)
+          print(json.dumps(self.get_json(), sort_keys=True, indent=4))
 
        def dump_as_yaml (self):
-          print yaml.dump(self.get_json(), default_flow_style=False)
+          print(yaml.dump(self.get_json(), default_flow_style=False))
 
 
 
@@ -436,10 +438,10 @@ class CTRexVmDescBase(object):
         return self.get_obj().__dict__
 
     def dump_bjson(self):
-       print json.dumps(self.get_json(), sort_keys=True, indent=4)
+       print(json.dumps(self.get_json(), sort_keys=True, indent=4))
 
     def dump_as_yaml(self):
-       print yaml.dump(self.get_json(), default_flow_style=False)
+       print(yaml.dump(self.get_json(), default_flow_style=False))
 
 
     def get_var_ref (self):
@@ -624,7 +626,7 @@ class CScapyTRexPktBuilder(CTrexPktBuilderInterface):
 
 
     def dump_vm_data_as_yaml(self):
-       print yaml.dump(self.get_vm_data(), default_flow_style=False)
+       print(yaml.dump(self.get_vm_data(), default_flow_style=False))
 
     def get_vm_data(self):
         """
@@ -712,7 +714,7 @@ class CScapyTRexPktBuilder(CTrexPktBuilderInterface):
 
             if var_names :
                 for var_name in var_names:
-                    if vars.has_key(var_name):
+                    if var_name in vars:
                         raise CTRexPacketBuildException(-11,("variable %s define twice ") % (var_name)  );
                     else:
                         vars[var_name]=1
@@ -721,7 +723,7 @@ class CScapyTRexPktBuilder(CTrexPktBuilderInterface):
         for desc in obj.commands:
             var_name =  desc.get_var_ref()
             if var_name :
-                if not vars.has_key(var_name):
+                if var_name not in vars:
                     raise CTRexPacketBuildException(-11,("variable %s does not exists  ") % (var_name) );  
             desc.compile(self);
 

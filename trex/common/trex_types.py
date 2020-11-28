@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from collections import namedtuple
 from common.text_opts import *
@@ -54,9 +55,9 @@ class RC():
 
     def prn_func (self, msg, newline = True):
         if newline:
-            print msg
+            print(msg)
         else:
-            print msg,
+            print(msg, end=' ')
 
     def annotate (self, log_func = None, desc = None, show_status = True):
 
@@ -70,12 +71,12 @@ class RC():
 
         if self.bad():
             # print all the errors
-            print ""
+            print("")
             for x in self.rc_list:
                 if not x.rc:
                     log_func(format_text("\n{0}".format(x.data), 'bold'))
 
-            print ""
+            print("")
             if show_status:
                 log_func(format_text("[FAILED]\n", 'red', 'bold'))
 

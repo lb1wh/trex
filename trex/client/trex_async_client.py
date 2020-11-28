@@ -1,8 +1,9 @@
 #!/router/bin/python
 
+from __future__ import absolute_import
 try:
     # support import for Python 2
-    import outer_packages
+    from . import outer_packages
 except ImportError:
     # support import for Python 3
     import client.outer_packages

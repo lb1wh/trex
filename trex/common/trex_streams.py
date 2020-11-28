@@ -1,11 +1,14 @@
 #!/router/bin/python
 
-import external_packages
+from __future__ import absolute_import
+#!/router/bin/python
+
+from . import external_packages
 from client_utils.packet_builder_interface import CTrexPktBuilderInterface
 from client_utils.packet_builder import CTRexPktBuilder
 from collections import OrderedDict, namedtuple
 from client_utils.yaml_utils import *
-import trex_stl_exceptions
+from . import trex_stl_exceptions
 import dpkt
 import struct
 import copy
@@ -334,7 +337,7 @@ class CStreamsDB(object):
 
 
 ########################### Simple Streams ###########################
-from trex_stl_exceptions import *
+from .trex_stl_exceptions import *
 
 # base class for TX mode
 class STLTXMode(object):

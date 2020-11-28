@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import outer_packages
 import lockfile
 from daemon import runner,daemon
@@ -101,9 +102,9 @@ class ExtendedDaemonRunner(runner.DaemonRunner):
     @staticmethod
     def _show(self):
         if self.pidfile.is_locked():
-            print termstyle.red("TRex server daemon is running")
+            print(termstyle.red("TRex server daemon is running"))
         else:
-            print termstyle.red("TRex server daemon is NOT running")
+            print(termstyle.red("TRex server daemon is NOT running"))
 
     def do_action(self):
         self.__prevent_duplicate_runs()
@@ -121,17 +122,17 @@ class ExtendedDaemonRunner(runner.DaemonRunner):
     
     def __prevent_duplicate_runs(self):
         if self.action == 'start' and self.pidfile.is_locked():
-            print termstyle.green("Server daemon is already running")
+            print(termstyle.green("Server daemon is already running"))
             exit(1)
         elif self.action == 'stop' and not self.pidfile.is_locked():
-            print termstyle.green("Server daemon is not running")
+            print(termstyle.green("Server daemon is not running"))
             exit(1)
 
     def __prompt_init_msg(self):
         if self.action == 'start':
-            print termstyle.green("Starting daemon server...")
+            print(termstyle.green("Starting daemon server..."))
         elif self.action == 'stop':
-            print termstyle.green("Stopping daemon server...")
+            print(termstyle.green("Stopping daemon server..."))
 
     def __verify_termination(self):
         pass

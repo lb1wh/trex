@@ -1,11 +1,13 @@
 #!/router/bin/python
 
+from __future__ import print_function
+from __future__ import absolute_import
 import sys
 import os
 
 try:
     # support import for Python 2
-    import outer_packages
+    from . import outer_packages
 except ImportError:
     # support import for Python 3
     import client.outer_packages
@@ -794,8 +796,8 @@ class CTRexClient(object):
         """
         if self.verbose:
             print ('\n')
-            print ("(*) JSON-RPC request:", self.history.request)
-            print ("(*) JSON-RPC response:", self.history.response)
+            print(("(*) JSON-RPC request:", self.history.request))
+            print(("(*) JSON-RPC response:", self.history.response))
 
     def __verbose_print(self, print_str):
         """

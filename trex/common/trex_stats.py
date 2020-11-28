@@ -1,4 +1,5 @@
 #!/router/bin/python
+from __future__ import print_function
 from collections import namedtuple, OrderedDict, deque
 from client_utils import text_tables
 from common.text_opts import format_text, format_threshold, format_num
@@ -242,7 +243,7 @@ class CTRexInfoGenerator(object):
         
         # display only the first FOUR options, by design
         if len(ports) > 4:
-            print format_text("[WARNING]: ", 'magenta', 'bold'), format_text("displaying up to 4 ports", 'magenta')
+            print(format_text("[WARNING]: ", 'magenta', 'bold'), format_text("displaying up to 4 ports", 'magenta'))
             ports = ports[:4]
         return ports
 
@@ -342,8 +343,8 @@ class CTRexStats(object):
 
         if not format:
             if not field in self.reference_stats:
-                print "REF: " + str(self.reference_stats)
-                print "BASE: " + str(self.latest_stats)
+                print("REF: " + str(self.reference_stats))
+                print("BASE: " + str(self.latest_stats))
 
             return (self.latest_stats[field] - self.reference_stats[field])
         else:

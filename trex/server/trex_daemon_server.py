@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import outer_packages
 import daemon
 from trex_server import do_main_program, trex_parser
@@ -52,9 +53,9 @@ def main ():
         formatter = logging.Formatter("%(asctime)s %(name)-10s %(module)-20s %(levelname)-8s %(message)s")
         handler = logging.FileHandler("/var/log/trex/trex_daemon_server.log")
         logger.addHandler(handler)
-    except EnvironmentError, e:
+    except EnvironmentError as e:
             if e.errno == errno.EACCES: # catching permission denied error
-                print "Launching user must have sudo privileges in order to run TRex daemon.\nTerminating daemon process."
+                print("Launching user must have sudo privileges in order to run TRex daemon.\nTerminating daemon process.")
             exit(-1)
 
     daemon_runner = ExtendedDaemonRunner(trex_app, trex_parser)
@@ -64,15 +65,15 @@ def main ():
 
     try:
         if not set(['start', 'stop']).isdisjoint(set(sys.argv)):
-            print "Logs are saved at: {log_path}".format( log_path = default_log_path )
+            print("Logs are saved at: {log_path}".format( log_path = default_log_path ))
         daemon_runner.do_action()
         
     except lockfile.LockTimeout as inst:
         logger.error(inst)
-        print inst
-        print """
+        print(inst)
+        print("""
         Please try again once the timeout has been reached.
-        If this error continues, consider killing the process manually and restart the daemon."""
+        If this error continues, consider killing the process manually and restart the daemon.""")
 
 
 if __name__ == "__main__":
