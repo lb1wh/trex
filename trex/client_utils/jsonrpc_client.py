@@ -3,6 +3,9 @@
 from __future__ import absolute_import
 #!/router/bin/python
 
+from builtins import next
+from builtins import str
+from builtins import object
 from . import external_packages
 import zmq
 import json
@@ -12,7 +15,7 @@ from time import sleep
 from collections import namedtuple
 from common.trex_types import *
 
-class bcolors:
+class bcolors(object):
     BLUE = '\033[94m'
     GREEN = '\033[32m'
     YELLOW = '\033[93m'

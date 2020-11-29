@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import argparse
 from collections import namedtuple
 import sys
@@ -146,7 +148,7 @@ def decode_multiplier(val, allow_update = False, divide_count = 1):
             result['op'] = "abs"
 
         if result['op'] != 'percentage':
-            result['value'] = result['value'] / divide_count
+            result['value'] = old_div(result['value'], divide_count)
 
         return result
 

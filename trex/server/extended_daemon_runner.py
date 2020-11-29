@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from __future__ import print_function
+from builtins import str
 import outer_packages
 import lockfile
 from daemon import runner,daemon
@@ -71,7 +72,7 @@ class ExtendedDaemonRunner(runner.DaemonRunner):
 
         daemonize_parser(parser_obj, self.action_funcs, ExtendedDaemonRunner.help_menu)
         args = parser_obj.parse_args()
-        self.action = unicode(args.action)
+        self.action = str(args.action)
 
         self.app = app
         self.daemon_context = daemon.DaemonContext()

@@ -1,6 +1,9 @@
 #!/router/bin/python
 
 from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 try:
     # support import for Python 2
     from . import outer_packages
@@ -84,7 +87,7 @@ class CTRexAsyncStatsPort(CTRexAsyncStats):
         return None
 
 # stats manager
-class CTRexAsyncStatsManager():
+class CTRexAsyncStatsManager(object):
     def __init__ (self):
 
         self.general_stats = CTRexAsyncStatsGeneral()
@@ -111,7 +114,7 @@ class CTRexAsyncStatsManager():
         port_stats = {}
 
         # filter the values per port and general
-        for key, value in snapshot.iteritems():
+        for key, value in snapshot.items():
             
             # match a pattern of ports
             m = re.search('(.*)\-([0-8])', key)
@@ -133,7 +136,7 @@ class CTRexAsyncStatsManager():
         self.general_stats.update(general_stats)
 
         # update all ports
-        for port_id, data in port_stats.iteritems():
+        for port_id, data in port_stats.items():
 
             if not port_id in self.port_stats:
                 self.port_stats[port_id] = CTRexAsyncStatsPort()
@@ -144,7 +147,7 @@ class CTRexAsyncStatsManager():
 
 
 
-class CTRexAsyncClient():
+class CTRexAsyncClient(object):
     def __init__ (self, server, port, stateless_client):
 
         self.port = port
@@ -317,7 +320,7 @@ class CTRexAsyncClient():
                 return rc
 
             # fast loop
-            for i in xrange(0, 100):
+            for i in range(0, 100):
                 if self.async_barrier['ack']:
                     break
                 time.sleep(0.001)

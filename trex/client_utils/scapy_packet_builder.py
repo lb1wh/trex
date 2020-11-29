@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import absolute_import
+from builtins import str
+from builtins import object
 from . import external_packages
 import random
 import string
@@ -305,7 +307,7 @@ class CTRexScapyPktUtl(object):
         return string 'IP:UDP:TCP'
         """
         l=self.get_list_iter ();
-        l1=map(lambda p: p.name,l );
+        l1=[p.name for p in l];
         return ":".join(l1);
 
     def _layer_offset(self, name, cnt = 0):

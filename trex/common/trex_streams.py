@@ -3,6 +3,9 @@
 from __future__ import absolute_import
 #!/router/bin/python
 
+from builtins import str
+from builtins import range
+from builtins import object
 from . import external_packages
 from client_utils.packet_builder_interface import CTrexPktBuilderInterface
 from client_utils.packet_builder import CTRexPktBuilder
@@ -49,7 +52,7 @@ class CStreamList(object):
     def remove_stream(self, name):
         popped = self.streams_list.pop(name)
         if popped:
-            for stream_name, stream in self.streams_list.items():
+            for stream_name, stream in list(self.streams_list.items()):
                 if stream.next_stream_id == name:
                     stream.next_stream_id = -1
                 try:
@@ -95,7 +98,7 @@ class CStreamList(object):
         # next, iterate over the streams and transform them from working with names to ids.
         # with that build a new dict with old stream_name as the key, and StreamPack as the stored value 
         compiled_streams = {}
-        for stream_name, stream in self.streams_list.items():
+        for stream_name, stream in list(self.streams_list.items()):
             tmp_stream = CStreamList._compile_single_stream(stream_name, stream, stream_ids)
             compiled_streams[stream_name] = StreamPack(stream_ids.get(stream_name),
                                                        tmp_stream)
@@ -145,7 +148,7 @@ class CTxMode(object):
               "multi_burst": ["pkts_per_burst", "ibg", "count"]}
 
     def __init__(self, type, pps=0, **kwargs):
-        self._MODES = CTxMode.FIELDS.keys()
+        self._MODES = list(CTxMode.FIELDS.keys())
         self.type = type
         self.pps = pps
         for field in CTxMode.FIELDS.get(self.type):
@@ -298,7 +301,7 @@ class CStreamsDB(object):
             rc = self.load_streams(LoadedStreamList(stream_pack_name,
                                                     loaded_obj,
                                                     [StreamPack(v.stream_id, v.stream.dump())
-                                                     for k, v in compiled_streams.items()]))
+                                                     for k, v in list(compiled_streams.items())]))
         except Exception as e:
             return None
 
@@ -324,7 +327,7 @@ class CStreamsDB(object):
         self.stream_packs.clear()
 
     def get_loaded_streams_names(self):
-        return self.stream_packs.keys()
+        return list(self.stream_packs.keys())
 
     def stream_pack_exists (self, name):
         return name in self.get_loaded_streams_names()

@@ -1,8 +1,14 @@
 #!/router/bin/python
 
 from __future__ import absolute_import
+from __future__ import division
 #!/router/bin/python
 
+from builtins import hex
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from . import external_packages
 import dpkt
 import socket
@@ -18,6 +24,7 @@ from collections import namedtuple
 import base64
 
 from .packet_builder_interface import CTrexPktBuilderInterface
+from future.utils import with_metaclass
 
 class CTRexPktBuilder(CTrexPktBuilderInterface):
     """
@@ -554,7 +561,7 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
         if depth_limit == Ellipsis:
             iterator = itertools.count(1)
         else:
-            iterator = xrange(depth_limit)
+            iterator = range(depth_limit)
         for _ in iterator:
             # append current layer type
             if isinstance(cur_layer, dpkt.Packet):
@@ -730,16 +737,16 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
             gen_length = self._calc_gen_length()
             if isinstance(ptrn_to_repeat, str):
                 # generate repeated string
-                return (ptrn_to_repeat * (gen_length/len(ptrn_to_repeat) + 1))[:gen_length]
+                return (ptrn_to_repeat * (old_div(gen_length,len(ptrn_to_repeat)) + 1))[:gen_length]
             elif isinstance(ptrn_to_repeat, int):
                 ptrn = binascii.unhexlify(hex(ptrn_to_repeat)[2:])
-                return (ptrn * (gen_length/len(ptrn) + 1))[:gen_length]
+                return (ptrn * (old_div(gen_length,len(ptrn)) + 1))[:gen_length]
             elif isinstance(ptrn_to_repeat, tuple):
                 if not all((isinstance(x, int) and (x < 255) and (x >= 0))
                            for x in ptrn_to_repeat):
                     raise ValueError("All numbers in tuple must be in range 0 <= number <= 255 ")
                 # generate repeated sequence
-                to_pack = (ptrn_to_repeat * (gen_length/len(ptrn_to_repeat) + 1))[:gen_length]
+                to_pack = (ptrn_to_repeat * (old_div(gen_length,len(ptrn_to_repeat)) + 1))[:gen_length]
                 return struct.pack('B'*gen_length, *to_pack)
             else:
                 raise ValueError("Given ptrn_to_repeat argument type ({0}) is illegal.".
@@ -818,7 +825,7 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
             if name not in self.vm_variables:
                 self.vm_variables[name] = self.CTRexVMFlowVariable(name)
                 # try configuring VM instruction attributes
-                for (field, value) in kwargs.items():
+                for (field, value) in list(kwargs.items()):
                     self.vm_variables[name].set_field(field, value)
             else:
                 raise CTRexPktBuilder.VMVarNameExistsError(name)
@@ -842,7 +849,7 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
             else:
                 new_write_inst = self.CTRexVMWrtFlowVarInst(name, pkt_offset)
                 # try configuring VM instruction attributes
-                for (field, value) in kwargs.items():
+                for (field, value) in list(kwargs.items()):
                     new_write_inst.set_field(field, value)
                 # add the instruction to the date-structure
                 inst = self.InstStore('write', new_write_inst)
@@ -863,7 +870,7 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
 
             """
             assert isinstance(flow_obj, CTRexPktBuilder.CTRexVM.CTRexVMFlowVariable)
-            if flow_obj.name not in self.vm_variables.keys():
+            if flow_obj.name not in list(self.vm_variables.keys()):
                 self.vm_variables[flow_obj.name] = flow_obj
             else:
                 raise CTRexPktBuilder.VMVarNameExistsError(flow_obj.name)
@@ -889,15 +896,13 @@ class CTRexPktBuilder(CTrexPktBuilderInterface):
 
             # at first, dump all CTRexVMFlowVariable instructions
             inst_array = [var.dump() if hasattr(var, 'dump') else var
-                          for key, var in self.vm_variables.items()]
+                          for key, var in list(self.vm_variables.items())]
             # then, dump all the CTRexVMWrtFlowVarInst and CTRexVMChecksumInst instructions
             inst_array += [self._inst_by_offset.get(key).inst.dump()
                            for key in sorted(self._inst_by_offset)]
             return {'instructions': inst_array, 'split_by_var': self.split_by_var}
 
-        class CVMAbstractInstruction(object):
-            __metaclass__ = ABCMeta
-
+        class CVMAbstractInstruction(with_metaclass(ABCMeta, object)):
             def __init__(self, name):
                 """
                 Instantiate a CTRexVMVariable object

@@ -1,4 +1,8 @@
 from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 import termios
 import sys
 import os
@@ -8,7 +12,7 @@ from common import trex_stats
 from client_utils import text_tables
 from collections import OrderedDict
 import datetime
-from cStringIO import StringIO
+from io import StringIO
 from client.trex_stateless_client import STLError
 
 class SimpleBar(object):
@@ -64,7 +68,7 @@ class TrexTUIDashBoard(TrexTUIPanel):
     def show (self):
         stats = self.stateless_client._get_formatted_stats(self.ports, trex_stats.COMPACT)
         # print stats to screen
-        for stat_type, stat_data in stats.iteritems():
+        for stat_type, stat_data in stats.items():
             text_tables.print_table_with_header(stat_data.text_table, stat_type)
 
 
@@ -151,7 +155,7 @@ class TrexTUIPort(TrexTUIPanel):
     def show (self):
         stats = self.stateless_client._get_formatted_stats([self.port_id], trex_stats.COMPACT)
         # print stats to screen
-        for stat_type, stat_data in stats.iteritems():
+        for stat_type, stat_data in stats.items():
             text_tables.print_table_with_header(stat_data.text_table, stat_type)
 
     def get_key_actions (self):
@@ -217,7 +221,7 @@ class TrexTUIPort(TrexTUIPanel):
         return "port {0}: cleared stats".format(self.port_id)
 
 # log
-class TrexTUILog():
+class TrexTUILog(object):
     def __init__ (self):
         self.log = []
 
@@ -237,7 +241,7 @@ class TrexTUILog():
 
 
 # Panels manager (contains server panels)
-class TrexTUIPanelManager():
+class TrexTUIPanelManager(object):
     def __init__ (self, tui):
         self.tui = tui
         self.stateless_client = tui.stateless_client
@@ -271,7 +275,7 @@ class TrexTUIPanelManager():
     def generate_legend (self):
         self.legend = "\n{:<12}".format("browse:")
 
-        for k, v in self.key_actions.iteritems():
+        for k, v in self.key_actions.items():
             if v['show']:
                 x = "'{0}' - {1}, ".format(k, v['legend'])
                 self.legend += "{:}".format(x)
@@ -280,7 +284,7 @@ class TrexTUIPanelManager():
 
 
         self.legend += "\n{:<12}".format(self.main_panel.get_name() + ":")
-        for k, v in self.main_panel.get_key_actions().iteritems():
+        for k, v in self.main_panel.get_key_actions().items():
             if v['show']:
                 x = "'{0}' - {1}, ".format(k, v['legend'])
                 self.legend += "{:}".format(x)
@@ -353,7 +357,7 @@ class TrexTUIPanelManager():
 
 
 # shows a textual top style window
-class TrexTUI():
+class TrexTUI(object):
 
     STATE_ACTIVE     = 0
     STATE_LOST_CONT  = 1

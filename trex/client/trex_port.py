@@ -1,5 +1,8 @@
 from __future__ import print_function
+from __future__ import division
 
+from builtins import object
+from past.utils import old_div
 from collections import namedtuple, OrderedDict
 from common.trex_types import *
 from common import trex_stats
@@ -13,13 +16,13 @@ def mult_to_factor (mult, max_bps_l2, max_pps, line_util):
         return mult['value']
 
     if mult['type'] == 'bps':
-        return mult['value'] / max_bps_l2
+        return old_div(mult['value'], max_bps_l2)
 
     if mult['type'] == 'pps':
-        return mult['value'] / max_pps
+        return old_div(mult['value'], max_pps)
 
     if mult['type'] == 'percentage':
-        return mult['value'] / line_util
+        return old_div(mult['value'], line_util)
 
 
 # describes a single port
@@ -414,8 +417,8 @@ class Port(object):
 
 
         # duration
-        exp_time_base_sec = graph['expected_duration'] / (1000 * 1000)
-        exp_time_factor_sec = exp_time_base_sec / factor
+        exp_time_base_sec = old_div(graph['expected_duration'], (1000 * 1000))
+        exp_time_factor_sec = old_div(exp_time_base_sec, factor)
 
         # user configured a duration
         if duration > 0:
@@ -462,7 +465,7 @@ class Port(object):
 
         if not stream_id_list:
             # if no mask has been provided, apply to all streams on port
-            stream_id_list = self.streams.keys()
+            stream_id_list = list(self.streams.keys())
 
 
         streams_data = {stream_id: self.streams[stream_id].metadata.get('stream_sum', ["N/A"] * 6)

@@ -18,6 +18,8 @@ limitations under the License.
 """
 from __future__ import print_function
 from __future__ import absolute_import
+from builtins import str
+from builtins import range
 import subprocess
 import cmd
 import json
@@ -124,7 +126,7 @@ class TRexGeneralCmd(cmd.Cmd):
         
         length = readline.get_current_history_length()
 
-        for i in xrange(1, length + 1):
+        for i in range(1, length + 1):
             cmd = readline.get_history_item(i)
             print("{:<5}   {:}".format(i, cmd))
 

@@ -1,5 +1,7 @@
 #!/router/bin/python
 
+from builtins import input
+from builtins import range
 import sys
 import site
 import string
@@ -17,10 +19,10 @@ using_python_3 = True if sys.version_info.major == 3 else False
 
 def user_input():
     if using_python_3:
-        return input()
+        return eval(input())
     else:
         # using python version 2
-        return raw_input()
+        return input()
 
 def get_current_user():
   if pwd:

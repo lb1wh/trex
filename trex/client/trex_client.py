@@ -2,6 +2,9 @@
 
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
+from builtins import object
 import sys
 import os
 
@@ -36,7 +39,7 @@ class CTRexClient(object):
     """
 
     def __init__(self, trex_host, max_history_size = 100, trex_daemon_port = 8090, trex_zmq_port = 4500, verbose = False):
-        """ 
+        """
         Instantiate a TRex client object, and connecting it to listening daemon-server
 
         :parameters:
@@ -96,8 +99,8 @@ class CTRexClient(object):
     def start_trex (self, f, d, block_to_success = True, timeout = 40, user = None, trex_development = False, **trex_cmd_options):
         """
         Request to start a TRex run on server.
-                
-        :parameters:  
+
+        :parameters:
             f : str
                 a path (on server) for the injected traffic data (.yaml file)
             d : int
@@ -116,7 +119,7 @@ class CTRexClient(object):
                 sets desired TRex options using key=val syntax, separated by comma.
                 for keys with no value, state key=True
 
-        :return: 
+        :return:
             **True** on success
 
         :raises:
@@ -125,7 +128,7 @@ class CTRexClient(object):
             + :exc:`trex_exceptions.TRexInUseError`, in case TRex is already taken.
             + :exc:`trex_exceptions.TRexRequestDenied`, in case TRex is reserved for another user than the one trying start TRex.
             + ProtocolError, in case of error in JSON-RPC protocol.
-        
+
         """
         user = user or self.__default_user
         try:
@@ -152,7 +155,7 @@ class CTRexClient(object):
         finally:
             self.prompt_verbose_data()
 
-        if retval!=0:   
+        if retval!=0:
             self.seq = retval   # update seq num only on successful submission
             return True
         else:   # TRex is has been started by another user
@@ -163,12 +166,12 @@ class CTRexClient(object):
         Request to stop a TRex run on server.
 
         The request is only valid if the stop initiator is the same client as the TRex run initiator.
-                
-        :parameters:        
+
+        :parameters:
             None
 
-        :return: 
-            + **True** on successful termination 
+        :return:
+            + **True** on successful termination
             + **False** if request issued but TRex wasn't running.
 
         :raises:
@@ -190,17 +193,17 @@ class CTRexClient(object):
         """
         Force killing of running TRex process (if exists) on the server.
 
-        .. tip:: This method is a safety method and **overrides any running or reserved resources**, and as such isn't designed to be used on a regular basis. 
+        .. tip:: This method is a safety method and **overrides any running or reserved resources**, and as such isn't designed to be used on a regular basis.
                  Always consider using :func:`trex_client.CTRexClient.stop_trex` instead.
 
         In the end of this method, TRex will return to IDLE state with no reservation.
-        
-        :parameters:        
+
+        :parameters:
             confirm : bool
                 Prompt a user confirmation before continue terminating TRex session
 
-        :return: 
-            + **True** on successful termination 
+        :return:
+            + **True** on successful termination
             + **False** otherwise.
 
         :raises:
@@ -234,12 +237,12 @@ class CTRexClient(object):
 
         The request is only valid if the stop initiator is the same client as the TRex run initiator.
 
-        :parameters:        
+        :parameters:
             timeout : int
                 maximum time (in seconds) to wait in blocking state until TRex changes state from 'Starting' to either 'Idle' or 'Running'
 
-        :return: 
-            + **True** on successful termination 
+        :return:
+            + **True** on successful termination
             + **False** if request issued but TRex wasn't running.
 
         :raises:
@@ -267,11 +270,11 @@ class CTRexClient(object):
 
         .. tip:: This method is especially useful for iterating until TRex run is finished.
 
-        :parameters:        
+        :parameters:
             dump_out : dict
                 if passed, the pointer object is cleared and the latest dump stored in it.
 
-        :return: 
+        :return:
             + **True** if TRex is running.
             + **False** if TRex is not running.
 
@@ -306,7 +309,7 @@ class CTRexClient(object):
         :parameters:
             None
 
-        :return: 
+        :return:
             + **True** if TRex is idle.
             + **False** if TRex is starting or running.
 
@@ -331,10 +334,10 @@ class CTRexClient(object):
         """
         Fetches the local path in which files are stored when pushed to TRex server from client.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             string representation of the desired path
 
             .. note::  The returned path represents a path on the TRex server **local machine**
@@ -358,10 +361,10 @@ class CTRexClient(object):
 
         If available, a verbose data will accompany the state itself.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary with 'state' and 'verbose' keys.
 
         :raises:
@@ -385,10 +388,10 @@ class CTRexClient(object):
 
         .. tip:: This method will throw an exception if TRex isn't running. Always consider using :func:`trex_client.CTRexClient.is_running` which handles a single poll operation in safer manner.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the most updated data dump from TRex.
 
         :raises:
@@ -401,7 +404,7 @@ class CTRexClient(object):
             # if requested in timeframe smaller than the original sample rate, return the last known data without interacting with server
             return self.result_obj.get_latest_dump()
         else:
-            try: 
+            try:
                 latest_dump = self.decoder.decode( self.server.get_running_info() ) # latest dump is not a dict, but json string. decode it.
                 self.result_obj.update_result_data(latest_dump)
                 return latest_dump
@@ -420,7 +423,7 @@ class CTRexClient(object):
 
         On each fetched dump, the condition_func is applied on the result objects, and if returns True, the sampling will stop.
 
-        :parameters:        
+        :parameters:
             condition_func : function
                 function that operates on result_obj and checks if a condition has been met
 
@@ -430,7 +433,7 @@ class CTRexClient(object):
 
                 default value : **5**
 
-        :return: 
+        :return:
             the first result object (see :class:`CTRexResult` for further details) of the TRex run on which the condition has been met.
 
         :raises:
@@ -442,7 +445,7 @@ class CTRexClient(object):
 
         """
         # make sure TRex is running. raise exceptions here if any
-        self.wait_until_kickoff_finish()    
+        self.wait_until_kickoff_finish()
         try:
             while self.is_running():
                 results = self.get_result_obj()
@@ -462,13 +465,13 @@ class CTRexClient(object):
         """
         Automatically sets automatically sampling of TRex data with sampling rate described by time_between_samples until TRex run finished.
 
-        :parameters:        
+        :parameters:
             time_between_samples : int
                 determines the time between each sample of the server
 
                 default value : **5**
 
-        :return: 
+        :return:
             the latest result object (see :class:`CTRexResult` for further details) with sampled data.
 
         :raises:
@@ -478,16 +481,16 @@ class CTRexClient(object):
             + ProtocolError, in case of error in JSON-RPC protocol.
 
         """
-        self.wait_until_kickoff_finish()    
-        
-        try: 
+        self.wait_until_kickoff_finish()
+
+        try:
             while self.is_running():
                 time.sleep(time_between_samples)
         except TRexWarning:
             pass
         results = self.get_result_obj()
         return results
-            
+
     def sample_x_seconds (self, sample_time, time_between_samples = 5):
         """
         Automatically sets ongoing sampling of TRex data for sample_time seconds, with sampling rate described by time_between_samples.
@@ -526,17 +529,17 @@ class CTRexClient(object):
 
     def get_result_obj (self, copy_obj = True):
         """
-        Returns the result object of the trex_client's instance. 
+        Returns the result object of the trex_client's instance.
 
         By default, returns a **copy** of the objects (so that changes to the original object are masked).
 
-        :parameters:        
+        :parameters:
             copy_obj : bool
-                False means that a reference to the original (possibly changing) object are passed 
+                False means that a reference to the original (possibly changing) object are passed
 
                 defaul value : **True**
 
-        :return: 
+        :return:
             the latest result object (see :class:`CTRexResult` for further details) with sampled data.
 
         """
@@ -549,10 +552,10 @@ class CTRexClient(object):
         """
         Checks if TRex is currently reserved to any user or not.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             + **True** if TRex is reserved.
             + **False** otherwise.
 
@@ -573,7 +576,7 @@ class CTRexClient(object):
         """
         Get Trex daemon log.
 
-        :return: 
+        :return:
             String representation of TRex daemon log
 
         :raises:
@@ -594,7 +597,7 @@ class CTRexClient(object):
         """
         Get TRex CLI output log
 
-        :return: 
+        :return:
             String representation of TRex log
 
         :raises:
@@ -615,7 +618,7 @@ class CTRexClient(object):
         """
         Get TRex version details.
 
-        :return: 
+        :return:
             Trex details (Version, User, Date, Uuid, Git SHA) as ordered dictionary
 
         :raises:
@@ -648,14 +651,14 @@ class CTRexClient(object):
         Reserves the usage of TRex to a certain user.
 
         When TRex is reserved, it can't be reserved.
-                
-        :parameters:        
+
+        :parameters:
             user : str
                 a username of the desired owner of TRex
 
                 default: current logged user
 
-        :return: 
+        :return:
             **True** if reservation made successfully
 
         :raises:
@@ -680,15 +683,15 @@ class CTRexClient(object):
 
         When TRex is reserved, no other user can start new TRex runs.
 
-                
-        :parameters:        
+
+        :parameters:
             user : str
                 a username of the desired owner of TRex
 
                 default: current logged user
 
-        :return: 
-            + **True** if reservation canceled successfully, 
+        :return:
+            + **True** if reservation canceled successfully,
             + **False** if there was no reservation at all.
 
         :raises:
@@ -696,7 +699,7 @@ class CTRexClient(object):
             + ProtocolError, in case of error in JSON-RPC protocol.
 
         """
-        
+
         username = user or self.__default_user
         try:
             return self.server.cancel_reservation(user = username)
@@ -706,17 +709,17 @@ class CTRexClient(object):
             raise
         finally:
             self.prompt_verbose_data()
-    
+
     def push_files (self, filepaths):
         """
-        Pushes a file (or a list of files) to store locally on server. 
-                
-        :parameters:        
+        Pushes a file (or a list of files) to store locally on server.
+
+        :parameters:
             filepaths : str or list
                 a path to a file to be pushed to server.
                 if a list of paths is passed, all of those will be pushed to server
 
-        :return: 
+        :return:
             + **True** if file(s) copied successfully.
             + **False** otherwise.
 
@@ -732,7 +735,7 @@ class CTRexClient(object):
             paths_list = filepaths
         else:
             raise TypeError("filepaths argument must be of type str or list")
-        
+
         for filepath in paths_list:
             try:
                 if not os.path.exists(filepath):
@@ -752,11 +755,11 @@ class CTRexClient(object):
         Checks if time between any two consecutive server queries (asking for live running data) passed.
 
         .. note:: The allowed minimum time between each two consecutive samples is 0.5 seconds.
-                
-        :parameters:        
+
+        :parameters:
             None
 
-        :return: 
+        :return:
             + **True** if more than 0.5 seconds has been past from last server query.
             + **False** otherwise.
 
@@ -783,13 +786,13 @@ class CTRexClient(object):
             socket.gethostbyname(self.trex_host)
             return self.server.connectivity_check()
         except socket.gaierror as e:
-            raise socket.gaierror(e.errno, "Could not resolve server hostname. Please make sure hostname entered correctly.")    
+            raise socket.gaierror(e.errno, "Could not resolve server hostname. Please make sure hostname entered correctly.")
         except socket.error as e:
             if e.errno == errno.ECONNREFUSED:
                 raise socket.error(errno.ECONNREFUSED, "Connection from TRex server was refused. Please make sure the server is up.")
         finally:
             self.prompt_verbose_data()
-        
+
     def prompt_verbose_data(self):
         """
         This method prompts any verbose data available, only if `verbose` option has been turned on.
@@ -803,7 +806,7 @@ class CTRexClient(object):
         """
         This private method prints the `print_str` string only in case self.verbose flag is turned on.
 
-        :parameters:        
+        :parameters:
             print_str : str
                 a string to be printed
 
@@ -814,7 +817,7 @@ class CTRexClient(object):
             print (print_str)
 
 
-    
+
     def _handle_AppError_exception(self, err):
         """
         This private method triggres the TRex dedicated exception generation in case a general ProtocolError has been raised.
@@ -831,7 +834,7 @@ class CTRexResult(object):
     Ontop to containing the results, this class offers easier data access and extended results processing options
     """
     def __init__(self, max_history_size):
-        """ 
+        """
         Instatiate a TRex result object
 
         :parameters:
@@ -859,10 +862,10 @@ class CTRexResult(object):
         """
         Fetches the expected TX rate in various units representation
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the expected TX rate, where the key is the measurement units, and the value is the measurement value.
 
         """
@@ -872,10 +875,10 @@ class CTRexResult(object):
         """
         Fetches the current TX rate in various units representation
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the current TX rate, where the key is the measurement units, and the value is the measurement value.
 
         """
@@ -885,10 +888,10 @@ class CTRexResult(object):
         """
         Fetches the maximum latency measured on each of the interfaces
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the maximum latency, where the key is the measurement interface (`c` indicates client), and the value is the measurement value.
 
         """
@@ -898,10 +901,10 @@ class CTRexResult(object):
         """
         Fetches the average latency measured on each of the interfaces from the start of TRex run
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the average latency, where the key is the measurement interface (`c` indicates client), and the value is the measurement value.
 
             The `all` key represents the average of all interfaces' average
@@ -913,10 +916,10 @@ class CTRexResult(object):
         """
         Fetches the average latency measured on each of the interfaces from all the sampled currently stored in window.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             dictionary containing the average latency, where the key is the measurement interface (`c` indicates client), and the value is the measurement value.
 
             The `all` key represents the average of all interfaces' average
@@ -928,23 +931,23 @@ class CTRexResult(object):
         """
         Fetches the total number of drops identified from the moment TRex run began.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             total drops count (as int)
 
         """
         return self._total_drops
-    
+
     def get_drop_rate (self):
         """
         Fetches the most recent drop rate in pkts/sec units.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             current drop rate (as float)
 
         """
@@ -954,10 +957,10 @@ class CTRexResult(object):
         """
         Checks if result obejct contains valid data.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             + **True** if history is valid.
             + **False** otherwise.
 
@@ -968,13 +971,13 @@ class CTRexResult(object):
         """
         Sets result obejct validity status.
 
-        :parameters:        
+        :parameters:
             valid_stat : bool
                 defines the validity status
 
                 dafault value : **True**
 
-        :return: 
+        :return:
             None
 
         """
@@ -984,10 +987,10 @@ class CTRexResult(object):
         """
         Checks if TRex latest results TX-rate indicates that TRex has reached its expected TX-rate.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             + **True** if expected TX-rate has been reached.
             + **False** otherwise.
 
@@ -998,11 +1001,11 @@ class CTRexResult(object):
         """
         A dynamic getter from the latest sampled data item stored in the result object.
 
-        :parameters:        
+        :parameters:
             tree_path_to_key : str
-                defines a path to desired data. 
+                defines a path to desired data.
 
-                .. tip:: | Use '.' to enter one level deeper in dictionary hierarchy. 
+                .. tip:: | Use '.' to enter one level deeper in dictionary hierarchy.
                          | Use '[i]' to access the i'th indexed object of an array.
 
             tree_path_to_key : regex
@@ -1012,7 +1015,7 @@ class CTRexResult(object):
 
                 dafault value : **None**
 
-        :return: 
+        :return:
             + a list of values relevant to the specified path
             + None if no results were fetched or the history isn't valid.
 
@@ -1026,11 +1029,11 @@ class CTRexResult(object):
         """
         A dynamic getter from all sampled data items stored in the result object.
 
-        :parameters:        
+        :parameters:
             tree_path_to_key : str
-                defines a path to desired data. 
+                defines a path to desired data.
 
-                .. tip:: | Use '.' to enter one level deeper in dictionary hierarchy. 
+                .. tip:: | Use '.' to enter one level deeper in dictionary hierarchy.
                          | Use '[i]' to access the i'th indexed object of an array.
 
             tree_path_to_key : regex
@@ -1045,7 +1048,7 @@ class CTRexResult(object):
 
                 dafault value : **True**
 
-        :return: 
+        :return:
             + a list of values relevant to the specified path. Each item on the list refers to a single server sample.
             + None if no results were fetched or the history isn't valid.
         """
@@ -1053,9 +1056,9 @@ class CTRexResult(object):
         if not self.is_valid_hist():
             return None
         else:
-            raw_list = list( map(lambda x: CTRexResult.__get_value_by_path(x, tree_path_to_key, regex), self._history) )
+            raw_list = list( [CTRexResult.__get_value_by_path(x, tree_path_to_key, regex) for x in self._history] )
             if filter_none:
-                return list (filter(lambda x: x!=None, raw_list) )
+                return list ([x for x in raw_list if x!=None] )
             else:
                 return raw_list
 
@@ -1063,10 +1066,10 @@ class CTRexResult(object):
         """
         A  getter to the latest sampled data item stored in the result object.
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             + a dictionary of the latest data item
             + an empty dictionary if history is empty.
 
@@ -1081,11 +1084,11 @@ class CTRexResult(object):
         """
         Integrates a `latest_dump` dictionary into the CTRexResult object.
 
-        :parameters:        
+        :parameters:
             latest_dump : dict
                 a dictionary with the items desired to be integrated into the object history and stats
 
-        :return: 
+        :return:
             None
 
         """
@@ -1093,7 +1096,7 @@ class CTRexResult(object):
         if latest_dump != {}:
             self._history.append(latest_dump)
             if not self.valid:
-                self.valid = True 
+                self.valid = True
 
             # parse important fields and calculate averages and others
             if self._expected_tx_rate is None:
@@ -1103,9 +1106,9 @@ class CTRexResult(object):
             self._current_tx_rate = CTRexResult.__get_value_by_path(latest_dump, "trex-global.data", "m_tx_(?!expected_)\w+")
             if not self._done_warmup and self._expected_tx_rate is not None:
                 # check for up to 2% change between expected and actual
-                if (self._current_tx_rate['m_tx_bps']/self._expected_tx_rate['m_tx_expected_bps'] > 0.98):
+                if (old_div(self._current_tx_rate['m_tx_bps'],self._expected_tx_rate['m_tx_expected_bps']) > 0.98):
                     self._done_warmup = True
-            
+
             # handle latency data
             if self.latency_checked:
                 latency_pre = "trex-latency"
@@ -1131,10 +1134,10 @@ class CTRexResult(object):
         """
         Clears all results and sets the history's validity to `False`
 
-        :parameters:        
+        :parameters:
             None
 
-        :return: 
+        :return:
             None
 
         """
@@ -1156,7 +1159,7 @@ class CTRexResult(object):
                 dct = dct[p or int(i)]
             if regex is not None and isinstance(dct, dict):
             	res = {}
-            	for key,val in dct.items():
+            	for key,val in list(dct.items()):
             		match = re.match(regex, key)
             		if match:
             			res[key]=val
@@ -1170,21 +1173,21 @@ class CTRexResult(object):
     def __calc_latency_win_stats (latency_win_list):
         res = {'all' : None }
         port_dict = {'all' : []}
-        list( map(lambda x: CTRexResult.__update_port_dict(x, port_dict), latency_win_list) )
+        list( [CTRexResult.__update_port_dict(x, port_dict) for x in latency_win_list] )
 
         # finally, calculate everages for each list
         res['all'] = float("%.3f" % (sum(port_dict['all'])/float(len(port_dict['all']))) )
         port_dict.pop('all')
-        for port, avg_list in port_dict.items():
+        for port, avg_list in list(port_dict.items()):
             res[port] = float("%.3f" % (sum(avg_list)/float(len(avg_list))) )
 
         return res
 
     @staticmethod
     def __update_port_dict (src_avg_dict, dest_port_dict):
-        all_list = src_avg_dict.values()
+        all_list = list(src_avg_dict.values())
         dest_port_dict['all'].extend(all_list)
-        for key, val in src_avg_dict.items():
+        for key, val in list(src_avg_dict.items()):
             reg_res = re.match("avg-(\d+)", key)
             if reg_res:
                 tmp_key = "port"+reg_res.group(1)
@@ -1196,9 +1199,9 @@ class CTRexResult(object):
     @staticmethod
     def __avg_all_and_rename_keys (src_dict):
         res       = {}
-        all_list  = src_dict.values()
+        all_list  = list(src_dict.values())
         res['all'] = float("%.3f" % (sum(all_list)/float(len(all_list))) )
-        for key, val in src_dict.items():
+        for key, val in list(src_dict.items()):
             reg_res = re.match("avg-(\d+)", key)
             if reg_res:
                 tmp_key = "port"+reg_res.group(1)

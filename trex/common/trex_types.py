@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from builtins import object
 from collections import namedtuple
 from common.text_opts import *
 
@@ -13,7 +14,7 @@ class RpcResponseStatus(namedtuple('RpcResponseStatus', ['success', 'id', 'msg']
                                                   stat="success" if self.success else "fail")
 
 # simple class to represent complex return value
-class RC():
+class RC(object):
 
     def __init__ (self, rc = None, data = None, is_warn = False):
         self.rc_list = []
@@ -22,7 +23,7 @@ class RC():
             tuple_rc = namedtuple('RC', ['rc', 'data', 'is_warn'])
             self.rc_list.append(tuple_rc(rc, data, is_warn))
 
-    def __nonzero__ (self):
+    def __bool__ (self):
         return self.good()
 
 

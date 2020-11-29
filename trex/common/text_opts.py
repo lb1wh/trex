@@ -1,3 +1,4 @@
+from builtins import object
 import json
 import re
 
@@ -18,9 +19,9 @@ TEXT_CODES = {'bold': {'start': '\x1b[1m',
               'underline': {'start': '\x1b[4m',
                             'end': '\x1b[24m'}}
 
-class TextCodesStripper:
-    keys = [re.escape(v['start']) for k,v in TEXT_CODES.iteritems()]
-    keys += [re.escape(v['end']) for k,v in TEXT_CODES.iteritems()]
+class TextCodesStripper(object):
+    keys = [re.escape(v['start']) for k,v in TEXT_CODES.items()]
+    keys += [re.escape(v['end']) for k,v in TEXT_CODES.items()]
     pattern = re.compile("|".join(keys))
 
     @staticmethod
@@ -128,7 +129,7 @@ def text_attribute(text, attribute):
         return "{start}{txt}{stop}".format(start=TEXT_CODES[attribute]['start'],
                                            txt=text,
                                            stop=TEXT_CODES[attribute]['end'])
-    elif isinstance(text, unicode):
+    elif isinstance(text, str):
         return u"{start}{txt}{stop}".format(start=TEXT_CODES[attribute]['start'],
                                             txt=text,
                                             stop=TEXT_CODES[attribute]['end'])

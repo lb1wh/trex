@@ -1,5 +1,6 @@
 
 # base object class for a packet builder
+from builtins import object
 class CTrexPktBuilderInterface(object):
 
     def compile (self):

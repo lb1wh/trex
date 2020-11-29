@@ -2,6 +2,8 @@
 
 
 from __future__ import print_function
+from builtins import str
+from builtins import object
 import os
 import stat
 import sys
@@ -359,7 +361,7 @@ class CTRexServer(object):
 
         # adding additional options to the command
         trex_cmd_options = ''
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             tmp_key = key.replace('_','-')
             dash = ' -' if (len(key)==1) else ' --'
             if (value == True) and (str(value) != '1'):       # checking also int(value) to excape from situation that 1 translates by python to 'True'
@@ -377,7 +379,7 @@ class CTRexServer(object):
 
         logger.info("TREX FULL COMMAND: {command}".format(command = cmd) )
 
-        return (cmd, export_path, long(d))
+        return (cmd, export_path, int(d))
 
     def __check_trex_path_validity(self):
         # check for executable existance

@@ -2,6 +2,7 @@
 
 #from rpc_exceptions import RPCExceptionHandler, WrappedRPCError
 
+from builtins import object
 from jsonrpclib import Fault, ProtocolError, AppError
 
 class RPCError(Exception):

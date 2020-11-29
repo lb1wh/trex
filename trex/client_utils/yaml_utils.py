@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import absolute_import
+from builtins import object
 import traceback
 import sys
 from . import external_packages
@@ -76,7 +77,7 @@ class CTRexYAMLLoader(object):
             return False, ValueError("The {0} field has no indication about default value".format(key))
 
     def validate_yaml(self, evaluated_obj, root_obj, fill_defaults=True, multiplier=1):
-        if isinstance(evaluated_obj, dict) and evaluated_obj.keys() == [root_obj]:
+        if isinstance(evaluated_obj, dict) and list(evaluated_obj.keys()) == [root_obj]:
             evaluated_obj = evaluated_obj.get(root_obj)
         if not self.ref_obj:
             self.ref_obj = load_yaml_to_obj(self.yaml_path)
@@ -94,7 +95,7 @@ class CTRexYAMLLoader(object):
                     if typed_obj[0]:
                         result_obj["type"] = typed_obj[1]
                     # print "processing dictionary non-terminal value"
-                    for k, v in ref_item.items():
+                    for k, v in list(ref_item.items()):
                         # print "processing element '{0}' with value '{1}'".format(k,v)
                         if k in evaluated_obj:
                             # validate with ref obj

@@ -1,3 +1,4 @@
+from builtins import str
 import os
 import sys
 from common.text_opts import *

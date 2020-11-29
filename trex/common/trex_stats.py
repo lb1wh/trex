@@ -1,5 +1,9 @@
 #!/router/bin/python
 from __future__ import print_function
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 from collections import namedtuple, OrderedDict, deque
 from client_utils import text_tables
 from common.text_opts import format_text, format_threshold, format_num
@@ -24,10 +28,10 @@ ExportableStats = namedtuple('ExportableStats', ['raw_data', 'text_table'])
 def calculate_diff (samples):
     total = 0.0
 
-    weight_step = 1.0 / sum(xrange(0, len(samples)))
+    weight_step = 1.0 / sum(range(0, len(samples)))
     weight = weight_step
 
-    for i in xrange(0, len(samples) - 1):
+    for i in range(0, len(samples) - 1):
         current = samples[i] if samples[i] > 0 else 1
         next = samples[i + 1] if samples[i + 1] > 0 else 1
 
@@ -44,10 +48,10 @@ def calculate_diff (samples):
 def calculate_diff_raw (samples):
     total = 0.0
 
-    weight_step = 1.0 / sum(xrange(0, len(samples)))
+    weight_step = 1.0 / sum(range(0, len(samples)))
     weight = weight_step
 
-    for i in xrange(0, len(samples) - 1):
+    for i in range(0, len(samples) - 1):
         current = samples[i]
         next = samples[i + 1]
 
@@ -104,7 +108,7 @@ class CTRexInfoGenerator(object):
         stats_table.set_cols_align(["l", "l"])
 
         stats_table.add_rows([[k.replace("_", " ").title(), v]
-                              for k, v in stats_data.iteritems()],
+                              for k, v in stats_data.items()],
                              header=False)
 
         return {"global_statistics": ExportableStats(stats_data, stats_table)}
@@ -166,7 +170,7 @@ class CTRexInfoGenerator(object):
         stats_table.set_cols_dtype(['t'] + ['t'] * total_cols)
 
         stats_table.add_rows([[k] + v
-                              for k, v in per_field_stats.iteritems()],
+                              for k, v in per_field_stats.items()],
                               header=False)
 
         stats_table.header(header)
@@ -198,7 +202,7 @@ class CTRexInfoGenerator(object):
         stats_table.set_cols_width([10] + [20] * len(relevant_ports))
 
         stats_table.add_rows([[k] + v
-                              for k, v in per_field_status.iteritems()],
+                              for k, v in per_field_status.items()],
                              header=False)
         stats_table.header(["port"] + [port.port_id
                                        for port in relevant_ports])
@@ -218,7 +222,7 @@ class CTRexInfoGenerator(object):
         # because we mutate this - deep copy before
         return_streams_data = copy.deepcopy(return_streams_data)
 
-        for stream_id, stream_id_sum in return_streams_data['streams'].iteritems():
+        for stream_id, stream_id_sum in return_streams_data['streams'].items():
             stream_id_sum['rate_pps'] = format_num(stream_id_sum['rate_pps'], suffix='pps')
             stream_id_sum['packet_type'] = self._trim_packet_headers(stream_id_sum['packet_type'], 20)
 
@@ -227,8 +231,8 @@ class CTRexInfoGenerator(object):
         info_table.set_cols_width([10]   + [20]  + [8]   + [16]  + [10]  + [12])
         info_table.set_cols_dtype(["t"] + ["t"] + ["t"] + ["t"] + ["t"] + ["t"])
 
-        info_table.add_rows([v.values()
-                             for k, v in return_streams_data['streams'].iteritems()],
+        info_table.add_rows([list(v.values())
+                             for k, v in return_streams_data['streams'].items()],
                              header=False)
         info_table.header(["ID", "packet type", "length", "mode", "rate", "next stream"])
 
@@ -238,7 +242,7 @@ class CTRexInfoGenerator(object):
     def __get_relevant_ports(self, port_id_list):
         # fetch owned ports
         ports = [port_obj
-                 for _, port_obj in self._ports_dict.iteritems()
+                 for _, port_obj in self._ports_dict.items()
                  if port_obj.port_id in port_id_list]
         
         # display only the first FOUR options, by design
@@ -248,7 +252,7 @@ class CTRexInfoGenerator(object):
         return ports
 
     def __update_per_field_dict(self, dict_src_data, dict_dest_ref):
-        for key, val in dict_src_data.iteritems():
+        for key, val in dict_src_data.items():
             if key in dict_dest_ref:
                 dict_dest_ref[key].append(val)
 
@@ -472,7 +476,7 @@ class CPortStats(CTRexStats):
 
     @staticmethod
     def __merge_dicts (target, src):
-        for k, v in src.iteritems():
+        for k, v in src.items():
             if k in target:
                 target[k] += v
             else:

@@ -2,6 +2,9 @@
 
 from __future__ import print_function
 from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 try:
     # support import for Python 2
     from . import outer_packages
@@ -54,7 +57,7 @@ class LoggerApi(object):
         raise Exception("implement this")
 
     def set_verbose (self, level):
-        if not level in xrange(self.VERBOSE_QUIET, self.VERBOSE_HIGH + 1):
+        if not level in range(self.VERBOSE_QUIET, self.VERBOSE_HIGH + 1):
             raise ValueError("bad value provided for logger")
 
         self.level = level
@@ -168,7 +171,7 @@ class AsyncEventHandler(object):
         port_stats = {}
 
         # filter the values per port and general
-        for key, value in dump_data.iteritems():
+        for key, value in dump_data.items():
             # match a pattern of ports
             m = re.search('(.*)\-([0-8])', key)
             if m:
@@ -188,7 +191,7 @@ class AsyncEventHandler(object):
         self.client.global_stats.update(global_stats)
 
         # update all ports
-        for port_id, data in port_stats.iteritems():
+        for port_id, data in port_stats.items():
             self.client.ports[port_id].port_stats.update(data)
 
 
@@ -449,7 +452,7 @@ class STLClient(object):
 
         # none means all
         if port_id_list == None:
-            return range(0, self.get_port_count())
+            return list(range(0, self.get_port_count()))
 
         # always list
         if isinstance(port_id_list, int):
@@ -660,7 +663,7 @@ class STLClient(object):
         self.supported_cmds = rc.data()
 
         # create ports
-        for port_id in xrange(self.system_info["port_count"]):
+        for port_id in range(self.system_info["port_count"]):
             speed = self.system_info['ports'][port_id]['speed']
             driver = self.system_info['ports'][port_id]['driver']
 
@@ -730,7 +733,7 @@ class STLClient(object):
             port_stats = self.ports[port_id].get_stats()
             stats[port_id] = port_stats
 
-            for k, v in port_stats.iteritems():
+            for k, v in port_stats.items():
                 if not k in total:
                     total[k] = v
                 else:
@@ -805,14 +808,14 @@ class STLClient(object):
     @staticmethod
     def __get_mask_keys(ok_values={True}, **kwargs):
         masked_keys = set()
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             if val in ok_values:
                 masked_keys.add(key)
         return masked_keys
 
     @staticmethod
     def __filter_namespace_args(namespace, ok_values):
-        return {k: v for k, v in namespace.__dict__.items() if k in ok_values}
+        return {k: v for k, v in list(namespace.__dict__.items()) if k in ok_values}
 
 
     # API decorator - double wrap because of argument
@@ -901,30 +904,30 @@ class STLClient(object):
 
     # get all ports as IDs
     def get_all_ports (self):
-        return self.ports.keys()
+        return list(self.ports.keys())
 
     # get all acquired ports
     def get_acquired_ports(self):
         return [port_id
-                for port_id, port_obj in self.ports.iteritems()
+                for port_id, port_obj in self.ports.items()
                 if port_obj.is_acquired()]
 
     # get all active ports (TX or pause)
     def get_active_ports(self):
         return [port_id
-                for port_id, port_obj in self.ports.iteritems()
+                for port_id, port_obj in self.ports.items()
                 if port_obj.is_active()]
 
     # get paused ports
     def get_paused_ports (self):
         return [port_id
-                for port_id, port_obj in self.ports.iteritems()
+                for port_id, port_obj in self.ports.items()
                 if port_obj.is_paused()]
 
     # get all TX ports
     def get_transmitting_ports (self):
         return [port_id
-                for port_id, port_obj in self.ports.iteritems()
+                for port_id, port_obj in self.ports.items()
                 if port_obj.is_transmitting()]
 
 
@@ -979,7 +982,7 @@ class STLClient(object):
     def set_verbose (self, level):
         modes = {'low' : LoggerApi.VERBOSE_QUIET, 'normal': LoggerApi.VERBOSE_REGULAR, 'high': LoggerApi.VERBOSE_HIGH}
 
-        if not level in modes.keys():
+        if not level in list(modes.keys()):
             raise STLArgumentError('level', level)
 
         self.logger.set_verbose(modes[level])
@@ -1260,7 +1263,7 @@ class STLClient(object):
             stream_id_list = [stream_id_list]
 
         # check streams
-        if not all([isinstance(stream_id, long) for stream_id in stream_id_list]):
+        if not all([isinstance(stream_id, int) for stream_id in stream_id_list]):
             raise STLArgumentError('stream_id_list', stream_id_list)
 
         # remove streams
@@ -1984,7 +1987,7 @@ class STLClient(object):
 
 
         # print stats to screen
-        for stat_type, stat_data in stats.iteritems():
+        for stat_type, stat_data in stats.items():
             text_tables.print_table_with_header(stat_data.text_table, stat_type)
 
 
@@ -2009,7 +2012,7 @@ class STLClient(object):
 
         else:
             # print stats to screen
-            for stream_hdr, port_streams_data in streams.iteritems():
+            for stream_hdr, port_streams_data in streams.items():
                 text_tables.print_table_with_header(port_streams_data.text_table,
                                                     header= stream_hdr.split(":")[0] + ":",
                                                     untouched_header= stream_hdr.split(":")[1])
