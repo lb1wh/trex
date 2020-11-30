@@ -1,4 +1,4 @@
-# T-Rex API Python
+# T-Rex API
 
 This is a fork of https://github.com/RaminNietzsche/trex. The plan is to enable
 support for Python 3.
